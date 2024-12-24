@@ -1,11 +1,15 @@
 package com.example.restByTdd;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.restByTdd.domain.member.member.controller.ApiV1MemberController;
+import com.example.restByTdd.domain.member.member.entity.Member;
+import com.example.restByTdd.domain.member.member.service.MemberService;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 class RestByTddApplicationTests {
     @Autowired
     private MockMvc mvc;
+    @Autowired
+    private MemberService memberService;
 
 	@Test
     @DisplayName("회원가입")
@@ -44,6 +50,12 @@ class RestByTddApplicationTests {
         resultActions
                 .andExpect(handler().handlerType(ApiV1MemberController.class))
                 .andExpect(handler().methodName("join"))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.resultCode").value("201-1"))
+                .andExpect(jsonPath("$.msg").value("무명님 환영합니다. 회원가입이 완료되었습니다."));
+
+        Member member = memberService.findByUsername("usernew").get();
+
+        assertThat(member.getName()).isEqualTo("무명");
     }
 }
