@@ -18,7 +18,7 @@ public class ResponseAspect {
             (
                 within
                 (
-                    @org.springframework.web.bind.annotation.authController *
+                    @org.springframework.web.bind.annotation.RestController *
                 )
                 &&
                 (
