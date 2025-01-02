@@ -10,9 +10,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +50,34 @@ public class ApiV1PostController {
         return new RsData<>(
                 "201-1",
                 "%d번 글이 작성되었습니다.".formatted(post.getId()),
+                new PostDto(post)
+        );
+    }
+
+    record PostModifyReqBody(
+            @NotBlank
+            @Length(min = 2, max = 100)
+            String title,
+            @NotBlank
+            @Length(min = 2, max = 10000000)
+            String content
+    ) {
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public RsData<PostDto> modify(@PathVariable long id, @RequestBody @Valid PostModifyReqBody reqBody) {
+        Member actor = this.rq.checkAuthentication();
+
+        Post post = this.postService.findById(id).get();
+
+        post.checkActorCanModify(actor);
+
+        postService.modify(post, reqBody.title, reqBody.content);
+
+        return new RsData<>(
+                "200-1",
+                "%d번 글이 수정되었습니다.".formatted(id),
                 new PostDto(post)
         );
     }
