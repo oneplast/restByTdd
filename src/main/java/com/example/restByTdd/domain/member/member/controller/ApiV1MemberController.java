@@ -6,6 +6,8 @@ import com.example.restByTdd.domain.member.member.service.MemberService;
 import com.example.restByTdd.global.exceptions.ServiceException;
 import com.example.restByTdd.global.rq.Rq;
 import com.example.restByTdd.global.rsData.RsData;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,14 +23,17 @@ public class ApiV1MemberController {
     private final Rq rq;
 
     record MemberJoinReqBody(
+            @NotBlank
             String username,
+            @NotBlank
             String password,
+            @NotBlank
             String nickname
     ) {
     }
 
     @PostMapping("/join")
-    public RsData<MemberDto> join(@RequestBody MemberJoinReqBody reqBody) {
+    public RsData<MemberDto> join(@RequestBody @Valid MemberJoinReqBody reqBody) {
         Member member = memberService.join(reqBody.username, reqBody.password, reqBody.nickname);
 
         return new RsData<>("201-1", "%s님 환영합니다. 회원가입이 완료되었습니다.".formatted(member.getName()),
@@ -36,7 +41,9 @@ public class ApiV1MemberController {
     }
 
     record MemberLoginReqBody(
+            @NotBlank
             String username,
+            @NotBlank
             String password
     ) {
     }
@@ -48,7 +55,7 @@ public class ApiV1MemberController {
     }
 
     @PostMapping("/login")
-    public RsData<MemberLoginResBody> login(@RequestBody MemberLoginReqBody reqBody) {
+    public RsData<MemberLoginResBody> login(@RequestBody @Valid MemberLoginReqBody reqBody) {
         Member member = memberService.findByUsername(reqBody.username).orElseThrow(() ->
                 new ServiceException("401-1", "존재하지 않는 사용자입니다."));
 
