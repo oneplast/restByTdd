@@ -21,7 +21,7 @@ public class MemberService {
         findByUsername(username)
                 .ifPresent(__ -> {
                     throw new IllegalArgumentException(
-                            new ServiceException("400-1", "해당 username은 이미 사용중입니다."));
+                            new ServiceException("409-1", "해당 username은 이미 사용중입니다."));
                 });
 
         Member member = Member.builder()
