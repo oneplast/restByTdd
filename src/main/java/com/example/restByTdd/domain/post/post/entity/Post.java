@@ -41,6 +41,8 @@ public class Post extends BaseTime {
 
     private boolean published;
 
+    private boolean listed;
+
     public PostComment addComment(Member author, String content) {
         PostComment comment = PostComment.builder()
                 .post(this)

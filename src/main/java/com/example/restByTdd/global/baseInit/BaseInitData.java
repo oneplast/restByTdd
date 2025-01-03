@@ -84,16 +84,20 @@ public class BaseInitData {
         Member memberUser3 = memberService.findByUsername("user3").get();
         Member memberUser4 = memberService.findByUsername("user4").get();
 
-        Post post1 = postService.write(memberUser1, "축구 하실 분?", "14시 까지 22명을 모아야 합니다.", true);
+        Post post1 = postService.write(memberUser1, "축구 하실 분?", "14시 까지 22명을 모아야 합니다.", true, true);
         post1.addComment(memberUser2, "저요!");
         post1.addComment(memberUser3, "저도 할래요.");
 
-        Post post2 = postService.write(memberUser1, "배구 하실 분?", "15시 까지 12명을 모아야 합니다.", true);
+        Post post2 = postService.write(memberUser1, "배구 하실 분?", "15시 까지 12명을 모아야 합니다.", true, true);
         post2.addComment(memberUser4, "저요!, 저 배구 잘합니다.");
 
-        postService.write(memberUser2, "농구 하실 분?", "16시 까지 10명을 모아야 합니다.", true);
-        postService.write(memberUser3, "발야구 하실 분?", "17 시까지 14명을 모아야 합니다.", true);
-        postService.write(memberUser4, "피구 하실 분?", "18시 까지 18명을 모아야 합니다.", true);
-        postService.write(memberUser4, "발야구를 밤에 하실 분?", "22시 까지 18명을 모아야 합니다.", false);
+        postService.write(memberUser2, "농구 하실 분?", "16시 까지 10명을 모아야 합니다.", true, true);
+        postService.write(memberUser3, "발야구 하실 분?", "17 시까지 14명을 모아야 합니다.", true, true);
+        postService.write(memberUser4, "피구 하실 분?", "18시 까지 18명을 모아야 합니다.", true, true);
+        postService.write(memberUser4, "발야구를 밤에 하실 분?", "22시 까지 18명을 모아야 합니다.", false, false);
+        postService.write(memberUser4, "발야구를 새벽 1시에 하실 분?", "새벽 1시 까지 17명을 모아야 합니다."
+                , true, false);
+        postService.write(memberUser4, "발야구를 새벽 3시에 하실 분?", "새벽 3시 까지 19명을 모아야 합니다."
+                , false, true);
     }
 }

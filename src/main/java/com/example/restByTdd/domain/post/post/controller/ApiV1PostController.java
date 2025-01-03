@@ -54,7 +54,7 @@ public class ApiV1PostController {
     public RsData<PostDto> write(@RequestBody @Valid PostWriteReqBody reqBody) {
         Member actor = rq.checkAuthentication();
 
-        Post post = this.postService.write(actor, reqBody.title, reqBody.content, true);
+        Post post = this.postService.write(actor, reqBody.title, reqBody.content, true, true);
 
         return new RsData<>(
                 "201-1",
