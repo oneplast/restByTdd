@@ -3,6 +3,7 @@ package com.example.restByTdd.domain.post.post.service;
 import com.example.restByTdd.domain.member.member.entity.Member;
 import com.example.restByTdd.domain.post.post.entity.Post;
 import com.example.restByTdd.domain.post.post.repository.PostRepository;
+import com.example.restByTdd.util.Ut;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -63,5 +64,26 @@ public class PostService {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Order.desc("id")));
 
         return postRepository.findByListed(listed, pageRequest);
+    }
+
+    public Page<Post> findByListedPaged(
+            boolean listed,
+            String searchKeywordType,
+            String searchKeyword,
+            int page,
+            int pageSize
+    ) {
+        if (Ut.str.isBlank(searchKeyword)) {
+            return findByListedPaged(listed, page, pageSize);
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Order.desc("id")));
+
+        searchKeyword = "%" + searchKeyword + "%";
+
+        return switch (searchKeywordType) {
+            case "content" -> postRepository.findByListedAndContentLike(listed, searchKeyword, pageRequest);
+            default -> postRepository.findByListedAndTitleLike(listed, searchKeyword, pageRequest);
+        };
     }
 }
