@@ -65,7 +65,9 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.authorId").value(post.getAuthor().getId()))
                 .andExpect(jsonPath("$.authorName").value(post.getAuthor().getName()))
                 .andExpect(jsonPath("$.title").value(post.getTitle()))
-                .andExpect(jsonPath("$.content").value(post.getContent()));
+                .andExpect(jsonPath("$.content").value(post.getContent()))
+                .andExpect(jsonPath("$.published").value(post.isPublished()))
+                .andExpect(jsonPath("$.listed").value(post.isListed()));
     }
 
     @Test
@@ -96,7 +98,9 @@ public class ApiV1PostControllerTest {
                                 .content("""
                                         {
                                             "title": "제목 new",
-                                            "content": "내용 new"
+                                            "content": "내용 new",
+                                            "published": true,
+                                            "listed": false
                                         }
                                         """)
                                 .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
@@ -122,7 +126,9 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.authorId").value(post.getAuthor().getId()))
                 .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getName()))
                 .andExpect(jsonPath("$.data.title").value(post.getTitle()))
-                .andExpect(jsonPath("$.data.content").value(post.getContent()));
+                .andExpect(jsonPath("$.data.content").value(post.getContent()))
+                .andExpect(jsonPath("$.data.published").value(post.isPublished()))
+                .andExpect(jsonPath("$.data.listed").value(post.isListed()));
     }
 
     @Test
@@ -197,7 +203,9 @@ public class ApiV1PostControllerTest {
                                 .content("""
                                         {
                                             "title": "축구 하실 분 계신가요?",
-                                            "content": "14시 까지 22명을 모아야 진행이 됩니다."
+                                            "content": "14시 까지 22명을 모아야 진행이 됩니다.",
+                                            "published": true,
+                                            "listed": false
                                         }
                                         """)
                                 .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
@@ -218,7 +226,9 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.authorId").value(post.getAuthor().getId()))
                 .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getName()))
                 .andExpect(jsonPath("$.data.title").value("축구 하실 분 계신가요?"))
-                .andExpect(jsonPath("$.data.content").value("14시 까지 22명을 모아야 진행이 됩니다."));
+                .andExpect(jsonPath("$.data.content").value("14시 까지 22명을 모아야 진행이 됩니다."))
+                .andExpect(jsonPath("$.data.published").value(post.isPublished()))
+                .andExpect(jsonPath("$.data.listed").value(post.isListed()));
     }
 
     @Test
