@@ -75,6 +75,8 @@ public class ApiV1PostController {
 
         postService.modify(post, reqBody.title, reqBody.content);
 
+        postService.flush();
+
         return new RsData<>(
                 "200-1",
                 "%d번 글이 수정되었습니다.".formatted(id),

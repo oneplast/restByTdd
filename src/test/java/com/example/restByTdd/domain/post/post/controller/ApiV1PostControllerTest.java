@@ -14,6 +14,7 @@ import com.example.restByTdd.domain.member.member.service.MemberService;
 import com.example.restByTdd.domain.post.post.entity.Post;
 import com.example.restByTdd.domain.post.post.service.PostService;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -186,7 +187,7 @@ public class ApiV1PostControllerTest {
         Member actor = memberService.findByUsername("user1").get();
         Post post = postService.findById(1).get();
 
-//        LocalDateTime oldModifyDate = post.getModifyDate();
+        LocalDateTime oldModifyDate = post.getModifyDate();
 
         ResultActions resultActions = mvc
                 .perform(
@@ -211,8 +212,8 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.id").value(1))
                 .andExpect(jsonPath("$.data.createDate").value(
                         Matchers.startsWith(post.getCreateDate().toString().substring(0, 25))))
-//                .andExpect(jsonPath("$.data.modifyDate").value(
-//                        Matchers.not(Matchers.startsWith(oldModifyDate.toString().substring(0, 25)))))
+                .andExpect(jsonPath("$.data.modifyDate").value(
+                        Matchers.not(Matchers.startsWith(oldModifyDate.toString().substring(0, 25)))))
                 .andExpect(jsonPath("$.data.authorId").value(post.getAuthor().getId()))
                 .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getName()))
                 .andExpect(jsonPath("$.data.title").value("축구 하실 분 계신가요?"))
