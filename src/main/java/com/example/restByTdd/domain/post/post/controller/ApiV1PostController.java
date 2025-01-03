@@ -10,6 +10,7 @@ import com.example.restByTdd.global.rsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
@@ -32,15 +33,21 @@ public class ApiV1PostController {
     private final Rq rq;
 
     @GetMapping
-    public List<PostDto> items(@RequestParam(defaultValue = "1") int page
+    public Map<String, Object> items(@RequestParam(defaultValue = "1") int page
             , @RequestParam(defaultValue = "10") int pageSize) {
         Page<Post> postPage = postService.findByListedPaged(true, page, pageSize);
 
-        return postPage
+        long totalItems = postPage.getTotalElements();
+        List<PostDto> items = postPage
                 .getContent()
                 .stream()
                 .map(PostDto::new)
                 .toList();
+
+        return Map.of(
+                "totalItems", totalItems,
+                "items", items
+        );
     }
 
     @GetMapping("/{id}")
