@@ -6,6 +6,9 @@ import com.example.restByTdd.domain.post.post.repository.PostRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -54,5 +57,13 @@ public class PostService {
 
     public Optional<Post> findLatest() {
         return this.postRepository.findFirstByOrderByIdDesc();
+    }
+
+    public List<Post> findByListedPaged(boolean listed, int page, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Order.desc("id")));
+
+        Page<Post> postPage = postRepository.findByListed(listed, pageRequest);
+
+        return postPage.getContent();
     }
 }

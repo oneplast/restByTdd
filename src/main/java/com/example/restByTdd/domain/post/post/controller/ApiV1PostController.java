@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,8 +31,9 @@ public class ApiV1PostController {
     private final Rq rq;
 
     @GetMapping
-    public List<PostDto> items() {
-        List<Post> posts = postService.findAllByOrderByIdDesc();
+    public List<PostDto> items(@RequestParam(defaultValue = "1") int page
+            , @RequestParam(defaultValue = "10") int pageSize) {
+        List<Post> posts = postService.findByListedPaged(true, page, pageSize);
 
         return posts.stream()
                 .map(PostDto::new)
