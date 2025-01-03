@@ -2,12 +2,14 @@ package com.example.restByTdd.domain.post.post.controller;
 
 import com.example.restByTdd.domain.member.member.entity.Member;
 import com.example.restByTdd.domain.post.post.dto.PostDto;
+import com.example.restByTdd.domain.post.post.dto.PostWithContentDto;
 import com.example.restByTdd.domain.post.post.entity.Post;
 import com.example.restByTdd.domain.post.post.service.PostService;
 import com.example.restByTdd.global.rq.Rq;
 import com.example.restByTdd.global.rsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +29,17 @@ public class ApiV1PostController {
     private final PostService postService;
     private final Rq rq;
 
+    @GetMapping
+    public List<PostDto> items() {
+        List<Post> posts = postService.findAllByOrderByIdDesc();
+
+        return posts.stream()
+                .map(PostDto::new)
+                .toList();
+    }
+
     @GetMapping("/{id}")
-    public PostDto item(@PathVariable long id) {
+    public PostWithContentDto item(@PathVariable long id) {
         Post post = postService.findById(id).get();
 
         if (!post.isPublished()) {
@@ -37,7 +48,7 @@ public class ApiV1PostController {
             post.checkActorCanRead(actor);
         }
 
-        return new PostDto(post);
+        return new PostWithContentDto(post);
     }
 
     record PostWriteReqBody(
@@ -53,7 +64,7 @@ public class ApiV1PostController {
     }
 
     @PostMapping
-    public RsData<PostDto> write(@RequestBody @Valid PostWriteReqBody reqBody) {
+    public RsData<PostWithContentDto> write(@RequestBody @Valid PostWriteReqBody reqBody) {
         Member actor = rq.checkAuthentication();
 
         Post post = this.postService.write(actor, reqBody.title, reqBody.content, reqBody.published, reqBody.listed);
@@ -61,7 +72,7 @@ public class ApiV1PostController {
         return new RsData<>(
                 "201-1",
                 "%d번 글이 작성되었습니다.".formatted(post.getId()),
-                new PostDto(post)
+                new PostWithContentDto(post)
         );
     }
 
@@ -79,7 +90,7 @@ public class ApiV1PostController {
 
     @PutMapping("/{id}")
     @Transactional
-    public RsData<PostDto> modify(@PathVariable long id, @RequestBody @Valid PostModifyReqBody reqBody) {
+    public RsData<PostWithContentDto> modify(@PathVariable long id, @RequestBody @Valid PostModifyReqBody reqBody) {
         Member actor = this.rq.checkAuthentication();
 
         Post post = this.postService.findById(id).get();
@@ -93,7 +104,7 @@ public class ApiV1PostController {
         return new RsData<>(
                 "200-1",
                 "%d번 글이 수정되었습니다.".formatted(id),
-                new PostDto(post)
+                new PostWithContentDto(post)
         );
     }
 
