@@ -13,9 +13,11 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -90,6 +92,34 @@ public class ApiV1PostCommentController {
         return new RsData<>(
                 "200-1",
                 "%d번 댓글이 수정되었습니다.".formatted(id),
+                new PostCommentDto(postComment)
+        );
+    }
+
+    record PostCommentWriteReqBody(
+            @NotBlank
+            @Length(min = 2, max = 100)
+            String content
+    ) {
+    }
+
+    @PostMapping
+    @Transactional
+    public RsData<PostCommentDto> write(@PathVariable long postId,
+                                        @RequestBody @Valid PostCommentWriteReqBody reqBody) {
+        Member actor = rq.checkAuthentication();
+
+        Post post = postService.findById(postId).orElseThrow(
+                () -> new ServiceException("404-1", "%d번 글은 존재하지 않습니다.".formatted(postId))
+        );
+
+        PostComment postComment = post.addComment(actor, reqBody.content);
+
+        postService.flush();
+
+        return new RsData<>(
+                "201-1",
+                "%d번 댓글이 생성되었습니다.".formatted(postComment.getId()),
                 new PostCommentDto(postComment)
         );
     }
