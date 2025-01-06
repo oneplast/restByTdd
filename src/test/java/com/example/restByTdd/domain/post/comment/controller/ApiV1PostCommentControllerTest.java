@@ -1,11 +1,13 @@
 package com.example.restByTdd.domain.post.comment.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.restByTdd.domain.member.member.entity.Member;
 import com.example.restByTdd.domain.member.member.service.MemberService;
 import com.example.restByTdd.domain.post.comment.entity.PostComment;
 import com.example.restByTdd.domain.post.post.service.PostService;
@@ -63,5 +65,25 @@ public class ApiV1PostCommentControllerTest {
                     .andExpect(jsonPath("$[%d].authorName".formatted(i)).value(postComment.getAuthor().getName()))
                     .andExpect(jsonPath("[%d].content".formatted(i)).value(postComment.getContent()));
         }
+    }
+
+    @Test
+    @DisplayName("댓글 삭제")
+    void t2() throws Exception {
+        Member actor = memberService.findByUsername("user2").get();
+
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/api/v1/posts/1/comments/1")
+                                .header("Authorization", "Bearer " + actor.getApiKey())
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostCommentController.class))
+                .andExpect(handler().methodName("delete"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("1번 댓글이 삭제되었습니다."));
     }
 }
