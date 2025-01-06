@@ -13,6 +13,12 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+#    url: jdbc:mysql://localhost:3306/restByTdd_dev
+#    username: root
+#    password: lldj123414
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      auto-commit: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,7 +28,6 @@ spring:
         format_sql: true
         highlight-sql: true
         use_sql_comments: true
-    open-in-view: false
 logging:
   level:
     org.hibernate.sql: debug

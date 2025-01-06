@@ -4,6 +4,7 @@ import com.example.restByTdd.domain.member.member.entity.Member;
 import com.example.restByTdd.domain.post.comment.dto.PostCommentDto;
 import com.example.restByTdd.domain.post.comment.entity.PostComment;
 import com.example.restByTdd.domain.post.post.entity.Post;
+import com.example.restByTdd.domain.post.post.repository.PostRepository;
 import com.example.restByTdd.domain.post.post.service.PostService;
 import com.example.restByTdd.global.exceptions.ServiceException;
 import com.example.restByTdd.global.rq.Rq;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/posts/{postId}/comments")
 public class ApiV1PostCommentController {
     private final PostService postService;
+    private final PostRepository postRepository;
     private final Rq rq;
 
     @GetMapping
